@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enkel Quiz App</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        #quizapp {
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="quizapp">
+        <h2 id="question">Spørsmålet vises her</h2>
+        <div id="options"></div>
+        <button id="nextBtn" onclick="showNextQuestion()">Neste</button>
+        <div id="result"></div>
+    </div> 
+
+    <script>
+
+        // Modell
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const quizData = [
+            {
+                question: "Hva heter jeg?",
+                options: ["Abibakar", "Hussein", "Abdi"],
+                answer: "Abibakar"
+            },
+            {
+                question: "Hvilken type sykkel liker jeg?",
+                options: ["Bicykkel", "Sykkel", "Elsykkel"],
+                answer: "Elsykkel"
+            },
+            {
+                question: "Hvilken type sport liker Abi nå?",
+                options: ["Fotball", "MMA", "Muaythai"],
+                answer: "MMA"
+            },
+            {   
+                question: "Hvilken parfyme liker Abi?",
+                options: ["Stronger With You", "Jean Paul", "Boss", "D&G Light Blue"],
+                answer: "Stronger With You"
+            }
+        ];
+
+
+        // Oppdater visning
+
+        function updateView() {
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+            const nextBtn = document.getElementById('nextBtn');
+            optionsElement.innerHTML = '';
+
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+
+            currentQuestion.options.forEach(option => {
+                const optionButton = document.createElement("button");
+                optionButton.textContent = option;
+                optionButton.onclick = () => checkAnswer(option);
+                optionsElement.appendChild(optionButton);
+            });
+
+            nextBtn.style.display = "none";
+        }
+
+        // Kontroll - Sjekk svar og vis neste
+        function checkAnswer(selectedOption) {
+            const currentQuestion = quizData[currentQuestionIndex];
+            const resultElement = document.getElementById('result');
+
+            if (selectedOption === currentQuestion.answer) {
+                score++;
+                resultElement.textContent = "Riktig!";
+            } else {
+                resultElement.textContent = `Feil! Riktig svar er: ${currentQuestion.answer}`;
+            }
+
+            document.getElementById('nextBtn').style.display = "block";
+        }
+
+        function showNextQuestion() {
+            const resultElement = document.getElementById('result');
+            currentQuestionIndex++;
+            resultElement.textContent = '';
+
+            if (currentQuestionIndex < quizData.length) {
+                updateView();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const quizAppElement = document.getElementById('quizapp');
+            quizAppElement.innerHTML = `<h2>Din poengsum er ${score} av ${quizData.length}</h2>`;
+        }
+
+        // Start quiz
+        updateView();
+    </script>
+
+</body>
+</html>
